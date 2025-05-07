@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="vi">
+<!DOCTYPE html><html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +9,44 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <style>
+        #gift-link {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #fff;
+            border-radius: 15px;
+            padding: 10px 20px;
+            text-align: center;
+            color: white;
+            font-family: 'Dancing Script', cursive;
+            font-size: 18px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 3s ease-in-out;
+        }
+        #gift-link a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #ff6ec7;
+            font-weight: bold;
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ff6ec7;
+        }
+        #gift-link a:hover {
+            background-color: #ff6ec7;
+            color: white;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <div id="drag-container">
@@ -27,119 +64,124 @@
             <p>Happy Birthday Neha Di</p>
         </div>
         <div id="ground"></div>
+    </div><div id="gift-link">
+    <div>
+        দিদি , আমার জন্মদিনের দিন তুমি আমাকে যেই উপহার দিয়েছিলে, তার কাছে এটা কিছু নয়।😄<br>
+        তাও দূরে থেকে তোমাকে একটু খুশি দেওয়ার চেষ্টা করলাম😊।<br>
+        পরের পেজে Play Song button এ ক্লিক করে , গানের মজা নিতে ভুলবে না 🎶<br>
+        আর যাবে কেমন লাগলো
     </div>
-    
-    <div id="music-container"></div>
-    <!-- <div id="canva">
-        <canvas id="canvas"></canvas>
-    </div> -->
+    <a href="https://mongaldipchowdhury.github.io/Mongaldip/" target="_blank">তোমার জন্য একটা ছোট্ট উপহার</a>
+</div>
 
-    <!-- Audio tự động phát -->
-    <audio id="myAudio" autoplay playsinline>
-        <source src="music/Neno.MP3" type="audio/mpeg">
-        <source src="music/Neno.ogg" type="audio/ogg">
-    </audio>
+<div id="music-container"></div>
 
-    <script src="main.js"></script>
+<audio id="myAudio" autoplay playsinline>
+    <source src="music/Neno.MP3" type="audio/mpeg">
+    <source src="music/Neno.ogg" type="audio/ogg">
+</audio>
 
-    <script>
-        window.onload = function() {
-            var audio = document.getElementById("myAudio");
-            audio.muted = false;
-            audio.play().catch(function(e) {
-                console.log('Audio playback failed:', e);
+<script src="main.js"></script>
+
+<script>
+    window.onload = function() {
+        var audio = document.getElementById("myAudio");
+        audio.muted = false;
+        audio.play().catch(function(e) {
+            console.log('Audio playback failed:', e);
+        });
+
+        const canvas = document.getElementById("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function Firework(x, y) {
+            this.x = x;
+            this.y = y;
+            this.radius = random(2, 4);
+            this.color = `hsl(${random(0, 360)}, 100%, 50%)`;
+            this.vx = random(-3, 3);
+            this.vy = random(-3, 3);
+            this.life = 100;
+        }
+
+        Firework.prototype.draw = function () {
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+        };
+
+        Firework.prototype.update = function () {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.life--;
+        };
+
+        function Heart(x, y) {
+            this.x = x;
+            this.y = y;
+            this.size = random(20, 40);
+            this.color = 'red';
+            this.vy = random(-2, -1);
+            this.opacity = 1;
+        }
+
+        Heart.prototype.draw = function () {
+            ctx.beginPath();
+            ctx.moveTo(this.x, this.y);
+            ctx.bezierCurveTo(this.x - this.size / 2, this.y - this.size / 2, this.x - this.size, this.y + this.size / 3, this.x, this.y + this.size);
+            ctx.bezierCurveTo(this.x + this.size, this.y + this.size / 3, this.x + this.size / 2, this.y - this.size / 2, this.x, this.y);
+            ctx.fillStyle = this.color;
+            ctx.globalAlpha = this.opacity;
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        };
+
+        Heart.prototype.update = function () {
+            this.y += this.vy;
+            this.opacity -= 0.01;
+        };
+
+        let fireworks = [];
+        let hearts = [];
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            if (Math.random() < 0.1) {
+                fireworks.push(new Firework(random(0, canvas.width), random(0, canvas.height)));
+            }
+            if (Math.random() < 0.05) {
+                hearts.push(new Heart(random(0, canvas.width), canvas.height));
+            }
+
+            fireworks.forEach((firework, index) => {
+                firework.draw();
+                firework.update();
+                if (firework.life <= 0) {
+                    fireworks.splice(index, 1);
+                }
             });
 
-            // Hiệu ứng pháo hoa và trái tim
-            const canvas = document.getElementById("canvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-
-            function random(min, max) {
-                return Math.random() * (max - min) + min;
-            }
-
-            function Firework(x, y) {
-                this.x = x;
-                this.y = y;
-                this.radius = random(2, 4);
-                this.color = `hsl(${random(0, 360)}, 100%, 50%)`;
-                this.vx = random(-3, 3);
-                this.vy = random(-3, 3);
-                this.life = 100;
-            }
-
-            Firework.prototype.draw = function () {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.fill();
-            };
-
-            Firework.prototype.update = function () {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life--;
-            };
-
-            function Heart(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = random(20, 40);
-                this.color = 'red';
-                this.vy = random(-2, -1);
-                this.opacity = 1;
-            }
-
-            Heart.prototype.draw = function () {
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.bezierCurveTo(this.x - this.size / 2, this.y - this.size / 2, this.x - this.size, this.y + this.size / 3, this.x, this.y + this.size);
-                ctx.bezierCurveTo(this.x + this.size, this.y + this.size / 3, this.x + this.size / 2, this.y - this.size / 2, this.x, this.y);
-                ctx.fillStyle = this.color;
-                ctx.globalAlpha = this.opacity;
-                ctx.fill();
-                ctx.globalAlpha = 1;
-            };
-
-            Heart.prototype.update = function () {
-                this.y += this.vy;
-                this.opacity -= 0.01;
-            };
-
-            let fireworks = [];
-            let hearts = [];
-
-            function animate() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (Math.random() < 0.1) {
-                    fireworks.push(new Firework(random(0, canvas.width), random(0, canvas.height)));
+            hearts.forEach((heart, index) => {
+                heart.draw();
+                heart.update();
+                if (heart.opacity <= 0) {
+                    hearts.splice(index, 1);
                 }
-                if (Math.random() < 0.05) {
-                    hearts.push(new Heart(random(0, canvas.width), canvas.height));
-                }
+            });
 
-                fireworks.forEach((firework, index) => {
-                    firework.draw();
-                    firework.update();
-                    if (firework.life <= 0) {
-                        fireworks.splice(index, 1);
-                    }
-                });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    };
+</script>
+<canvas id="canvas"></canvas>
 
-                hearts.forEach((heart, index) => {
-                    heart.draw();
-                    heart.update();
-                    if (heart.opacity <= 0) {
-                        hearts.splice(index, 1);
-                    }
-                });
-
-                requestAnimationFrame(animate);
-            }
-            animate();
-        };
-    </script>
 </body>
 </html>
