@@ -155,10 +155,10 @@
       }
     }
 
-    var tanya = "How about we celebrate your birthday in style?";
-    var opstanya = "Your choice is:";
-    var tompositif = "Absolutely, let’s celebrate! 🎉";
-    var tomnegatif = "Maybe another time";
+    var tanya = "কাছে আসতে পারলাম না😞 , তাই দুর থেকেই তোমাকে খুশি করার চেষ্টা করে এই সব বানিয়েছি।🥰";
+    var opstanya = "কখনও দেখতে চাও ?";
+    var tompositif = "এই মুহূর্তেই দেখতে চাই। 🎉";
+    var tomnegatif = "পরে দেখতে চাইe";
 
     async function pertanyaan() {
       var { isConfirmed: prtanya } = await swals.fire({
@@ -173,7 +173,7 @@
         pesanwhatsapp = "Yes " + nama + ", let the birthday magic begin!";
         menuju();
       } else {
-        pesanwhatsapp = nama + ", don't miss out on the birthday fun!";
+        pesanwhatsapp = nama + "Di, পরে নয়। তোমাকে এক্ষুনি দেখতে হবে 😛!";
         await swalst.fire({
           title: "" + kataditolak.innerHTML,
           timer: 2000,
